@@ -1,7 +1,16 @@
 package ru.job4j.concurrent;
 
+/**
+ * This class outputs to console names of threads.
+ * @author kirill
+ */
 public class ConcurrentOutput {
-    public static void main(String[] args) {
+	protected ConcurrentOutput() { }
+/**
+ * Main method.
+ * @param args console inputs.
+ */
+    public static void main(final String[] args) {
         Thread another = new Thread(
                 () -> System.out.println(Thread.currentThread().getName())
         );
