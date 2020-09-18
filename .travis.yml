@@ -6,7 +6,8 @@ jdk:
   - openjdk14
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- export CODECOV_TOKEN="2b6c4de9-43e8-4813-bad1-dc7ec26aa3f5"
+- bash <(curl -s https://codecov.io/bash)
   
 notifications:
   email:
@@ -14,7 +15,4 @@ notifications:
       - kirilldan94@mail.ru
     on_success: never # default: change
     on_failure: always # default: always
-    
-env:
-  global:
-  - CODECOV_TOKEN="2b6c4de9-43e8-4813-bad1-dc7ec26aa3f5"
+
