@@ -7,21 +7,32 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<main.basedir>${project.basedir}</main.basedir>
+		<unit.version>4.13</unit.version>
+		<maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
 		<java.version>14</java.version>
-		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
-		<jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+		<maven.checkstyle.plugin.version>3.1.1</maven.checkstyle.plugin.version>
+		<jacoco.maven.plugin.version>0.8.6</jacoco.maven.plugin.version>
 	</properties>
 	
 	<modules>
         <module>Threads</module>
         <module>Wget</module>
-    </modules>
+        <module>CommonResources</module>
+	</modules>
+    <dependencies>
+    	<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${unit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<release>${java.version}</release>
 				</configuration>
@@ -29,15 +40,15 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${maven-checkstyle-plugin.version}</version>
+				<version>${maven.checkstyle.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>validate</id>
 						<phase>validate</phase>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<configLocation>checkstyle.xml</configLocation>
-							<consoleOutput>true</consoleOutput>
+							<configLocation>${main.basedir}/checkstyle.xml</configLocation>
+					 		<consoleOutput>true</consoleOutput>
 							<failsOnError>true</failsOnError>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 						</configuration>
@@ -50,7 +61,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco-maven-plugin.version}</version>
+				<version>${jacoco.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>
