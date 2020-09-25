@@ -15,6 +15,7 @@
 	
 	<modules>
         <module>Threads</module>
+        <module>Wget</module>
     </modules>
 	<build>
 		<plugins>
