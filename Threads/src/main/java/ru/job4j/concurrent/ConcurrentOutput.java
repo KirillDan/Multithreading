@@ -5,7 +5,7 @@ package ru.job4j.concurrent;
  * @author kirill
  */
 public class ConcurrentOutput {
-	protected ConcurrentOutput() { }
+protected ConcurrentOutput() { }
 /**
  * Main method.
  * @param args console inputs.
