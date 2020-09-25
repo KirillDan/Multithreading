@@ -9,4 +9,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>Threads</artifactId>
 	<packaging>jar</packaging>
+	
+	<properties>
+		<main.basedir>${project.parent.basedir}</main.basedir>
+	</properties>
 </project>
