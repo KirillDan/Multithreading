@@ -1,7 +1,7 @@
 package ru.job4j;
 
 /**
- * This class demonstrate counter.
+ * This class demonstrate cache.
  * @author Kirill
  */
 public final class Cache {
