@@ -9,14 +9,18 @@ public class Count {
     /**
      * increment counter.
      */
-    public synchronized void increment() {
-        value++;
+    public void increment() {
+    	synchronized (this) {
+            value++;
+        }
     }
     /**
      * get counter value.
      * @return count value
      */
-    public synchronized int get() {
-        return value;
+    public int get() {
+    	synchronized (this) {
+            return value;
+        }
     }
 }
