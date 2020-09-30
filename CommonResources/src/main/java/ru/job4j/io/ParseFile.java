@@ -40,7 +40,7 @@ public class ParseFile {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public synchronized String getContent() throws FileNotFoundException, IOException {
+	public synchronized String getContent() {
 		String output = "";
 		try (FileInputStream i = new FileInputStream(file)) {
 			int fileSize = i.available();
@@ -48,6 +48,10 @@ public class ParseFile {
 			if (i.read(data) == fileSize) {
 				output = new String(data, 0, fileSize);
 			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return output;
 	}
@@ -58,7 +62,7 @@ public class ParseFile {
 	 * @return String output
 	 * @throws IOException
 	 */
-	public synchronized String getContentWithoutUnicode() throws IOException {
+	public synchronized String getContentWithoutUnicode() {
 		String output = this.getContent();
 		ByteArrayInputStream i = new ByteArrayInputStream(output.getBytes());
 		int data;
@@ -77,8 +81,14 @@ public class ParseFile {
 	 * @param content
 	 * @throws IOException
 	 */
-	public synchronized void saveContent(final String content) throws IOException {
-		FileOutputStream o = new FileOutputStream(file);
-		o.write(content.getBytes());
+	public synchronized void saveContent(final String content) {
+		try {
+			FileOutputStream o = new FileOutputStream(file);
+			o.write(content.getBytes());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
