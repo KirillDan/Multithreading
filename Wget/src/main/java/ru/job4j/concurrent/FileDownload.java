@@ -1,34 +1,49 @@
 package ru.job4j.concurrent;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * This class outputs to console names of threads.
+ * 
  * @author kirill
  */
-public class FileDownload {
-	protected FileDownload() {
-	}
+public class FileDownload implements Callable<ByteArrayOutputStream> {
+	private String fileUrl;
+	private int rate;
+
 	/**
-	 * Main method.
-	 * @param args console inputs.
+	 * 
+	 * @param fileUrl
+	 * @param rate
 	 */
-	public static void main(final String[] args) {
-		String fileUrl = args[0];
-		int rate = Integer.parseInt(args[1]);
+	public FileDownload(final String fileUrl, final int rate) {
+		this.fileUrl = fileUrl;
+		this.rate = rate;
+	}
+
+	@Override
+	public ByteArrayOutputStream call() throws Exception {
 		long startTime;
 		long stopTime;
 		float kBytes = 0;
-		try (BufferedInputStream in = new BufferedInputStream(new URL(fileUrl).openStream());
-				FileOutputStream fileOutputStream = new FileOutputStream("pom_tmp3.xml")) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try (BufferedInputStream in = new BufferedInputStream(new URL(fileUrl).openStream())) {
 			byte[] dataBuffer = new byte[1024];
-			int bytesRead;			
+			int bytesRead;
 			startTime = System.currentTimeMillis();
 			while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
-				fileOutputStream.write(dataBuffer, 0, bytesRead);
+				out.write(dataBuffer, 0, bytesRead);
 				kBytes += 1f;
 				try {
 					stopTime = System.currentTimeMillis();
@@ -46,5 +61,33 @@ public class FileDownload {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return out;
+	}
+
+	/**
+	 * Main method.
+	 * 
+	 * @param args console inputs.
+	 */
+	public static void main(final String[] args) {
+		String fileUrl = args[0];
+		int rate = Integer.parseInt(args[1]);
+		Future<ByteArrayOutputStream> fb;
+		ExecutorService es = Executors.newSingleThreadExecutor();
+		fb = es.submit(new FileDownload(fileUrl, rate));
+		ByteArrayOutputStream resultOutputStream = null;
+		try {
+			resultOutputStream = fb.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		try (FileOutputStream fout = new FileOutputStream("SavedFile" + new Random().nextInt())) {
+			resultOutputStream.writeTo(fout);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		es.shutdown();
 	}
 }
