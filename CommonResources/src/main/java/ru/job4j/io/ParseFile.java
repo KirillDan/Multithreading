@@ -1,14 +1,14 @@
 package ru.job4j.io;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.function.Predicate;
 
 interface ParseFileReader {
-	public String getContent(final boolean withoutUnicode, final File file);
+	public String getContent(final Predicate<Integer> pred, final File file);
 }
 
 interface ParseFileWriter {
@@ -20,37 +20,24 @@ class ParseFileReaderImpl implements ParseFileReader {
 	 * Read file string content may be without unicode.
 	 * 
 	 * @param file
-	 * @param withoutUnicode
+	 * @param pred
 	 * @return String output
 	 */
-	public synchronized String getContent(final boolean withoutUnicode, final File file) {
-		String result = null;
-		String output = null;
+	public synchronized String getContent(final Predicate<Integer> pred, final File file) {
+		StringBuilder output = new StringBuilder("");
 		try (FileInputStream i = new FileInputStream(file)) {
-			int fileSize = i.available();
-			byte[] data = new byte[fileSize];
-			if (i.read(data) == fileSize) {
-				output = new String(data, 0, fileSize);
+			int data;
+			while ((data = i.read()) > 0) {
+				if (pred.test(data)) {
+					output.append((char) data);
+				}
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (withoutUnicode) {
-			ByteArrayInputStream i = new ByteArrayInputStream(output.getBytes());
-			int data;
-			StringBuilder sb = new StringBuilder("");
-			while ((data = i.read()) > 0) {
-				if (data < 0x80) {
-					sb.append((char) data);
-				}
-			}
-			result = sb.toString();
-		} else {
-			result = output;
-		}
-		return result;
+		return output.toString();
 	}
 }
 
@@ -120,13 +107,21 @@ public class ParseFile {
 	}
 
 	/**
-	 * Read file string content may be without unicode.
+	 * Read file string content.
 	 * 
-	 * @param withoutUnicode
 	 * @return String output
 	 */
-	public synchronized String getContent(final boolean withoutUnicode) {
-		return parseFileReader.getContent(withoutUnicode, this.file);
+	public synchronized String getContent() {
+		return parseFileReader.getContent(i -> true, this.file);
+	}
+
+	/**
+	 * Read file string content without unicode.
+	 * 
+	 * @return String output
+	 */
+	public synchronized String getContentWithoutUnicode() {
+		return parseFileReader.getContent(i -> i < 0x80, this.file);
 	}
 
 	/**
