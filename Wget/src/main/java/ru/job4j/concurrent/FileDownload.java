@@ -19,8 +19,8 @@ import java.util.concurrent.Future;
  * @author kirill
  */
 public class FileDownload implements Callable<ByteArrayOutputStream> {
-	private String fileUrl;
-	private int rate;
+	private final String fileUrl;
+	private final int rate;
 
 	/**
 	 * 
