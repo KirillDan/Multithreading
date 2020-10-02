@@ -6,7 +6,8 @@ import net.jcip.annotations.ThreadSafe;
 
 @ThreadSafe
 public class UserStorage {
-	private volatile ConcurrentHashMap<Integer, Integer> users = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<Integer, User> users = new ConcurrentHashMap<>();
+
 	/**
 	 * 
 	 * @param user
@@ -14,11 +15,18 @@ public class UserStorage {
 	 */
 	public synchronized boolean add(final User user) {
 		boolean result = false;
-		if (!this.users.containsKey(user.getId())) {
-			this.users.put(user.getId(), user.getAmount());
+		if (this.users.putIfAbsent(user.getId(), user) == user) {
 			result = true;
-		}	
+		}
 		return result;
+	}
+	/**
+	 * 
+	 * @param id
+	 * @return user
+	 */
+	public synchronized User get(final int id) {
+		return this.users.get(id);
 	}
 	/**
 	 * 
@@ -28,19 +36,21 @@ public class UserStorage {
 	public synchronized boolean update(final User user) {
 		boolean result = false;
 		if (this.users.containsKey(user.getId())) {
-			this.users.put(user.getId(), user.getAmount());
+			this.users.put(user.getId(), user);
 			result = true;
-		}		
+		}
 		return result;
 	}
+
 	/**
 	 * 
 	 * @param user
 	 * @return delete user is true
 	 */
 	public synchronized boolean delete(final User user) {
-		return this.users.remove(user.getId(), user.getAmount());
+		return this.users.remove(user.getId(), user);
 	}
+
 	/**
 	 * 
 	 * @param fromId
@@ -50,20 +60,18 @@ public class UserStorage {
 	 */
 	public synchronized boolean transfer(final int fromId, final int toId, final int amount) {
 		boolean result = false;
-		if (this.users.containsKey(fromId)
-				&& this.users.containsKey(toId)) {
-			Integer fromAmount = this.users.get(fromId);
-			Integer toAmount = this.users.get(toId);
-			if (fromAmount >= amount) {
-				fromAmount -= amount;
-				toAmount += amount;
-				this.users.put(fromId, fromAmount);
-				this.users.put(toId, toAmount);
+		User fromUser = this.users.get(fromId);
+		User toUser = this.users.get(toId);
+		if (fromUser != null &&  toUser != null) {
+			if (fromUser.getAmount() >= amount) {
+				fromUser.setAmount(fromUser.getAmount() - amount);
+				toUser.setAmount(toUser.getAmount() + amount);
 				result = true;
 			}
 		}
 		return result;
 	}
+
 	@Override
 	public String toString() {
 		return "UserStorage  =  " + users.toString();
