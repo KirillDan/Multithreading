@@ -26,7 +26,13 @@ public class SimpleBlockingQueue<T> {
 	public SimpleBlockingQueue(final int total) {
 		this.total = total;
 	}
-
+	/**
+	 * 
+	 * @return true if queue is empty
+	 */
+	public boolean isEmpty() {
+		return this.queue.isEmpty();
+	}
 	/**
 	 * 
 	 */
