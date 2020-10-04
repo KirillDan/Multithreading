@@ -29,6 +29,13 @@ public class SimpleBlockingQueue<T> {
 
 	/**
 	 * 
+	 */
+	public SimpleBlockingQueue() {
+		this.total = Integer.MAX_VALUE;
+	}
+
+	/**
+	 * 
 	 * @param value
 	 */
 	public void offer(final T value) {
@@ -48,15 +55,12 @@ public class SimpleBlockingQueue<T> {
 	/**
 	 * 
 	 * @return T
+	 * @throws InterruptedException
 	 */
-	public T poll() {
+	public T poll() throws InterruptedException {
 		synchronized (monitor) {
 			while (this.queue.isEmpty()) {
-				try {
-					monitor.wait();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
+				monitor.wait();
 			}
 			monitor.notifyAll();
 			return this.queue.poll();

@@ -42,7 +42,12 @@ public class SimpleBlockingQueueTestString {
 			Thread.currentThread().interrupt();
 		}
 		Thread consumer = new Thread(() -> {
-			assertEquals(this.simpleBlockingQueue.poll(), message);
+			try {
+				assertEquals(this.simpleBlockingQueue.poll(), message);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		});
 		consumer.start();
 		consumer.join();
@@ -57,7 +62,12 @@ public class SimpleBlockingQueueTestString {
 	public void testQueueWithBlockingConsumer() throws InterruptedException {
 		String message = "Hello";
 		Thread consumer = new Thread(() -> {
-			assertEquals(this.simpleBlockingQueue.poll(), message);
+			try {
+				assertEquals(this.simpleBlockingQueue.poll(), message);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		});
 		consumer.start();
 		try {
@@ -99,7 +109,12 @@ public class SimpleBlockingQueueTestString {
 		}
 		assertTrue(producer.isAlive());
 		Thread consumer = new Thread(() -> {
-				this.simpleBlockingQueue.poll();
+				try {
+					this.simpleBlockingQueue.poll();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		});
 		consumer.start();
 		try {
@@ -107,7 +122,6 @@ public class SimpleBlockingQueueTestString {
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-		assertFalse(producer.isAlive());
-		
+		assertFalse(producer.isAlive());	
 	}
 }

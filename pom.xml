@@ -20,6 +20,7 @@
 		<module>Threads</module>
 		<module>Wget</module>
 		<module>CommonResources</module>
+		<module>Waiting</module>
 	</modules>
 	<dependencies>
 		<dependency>
