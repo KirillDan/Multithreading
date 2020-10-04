@@ -16,7 +16,7 @@ public class CountBarrierTest {
 	@Before
 	public void setup() {
 		this.total = 5;
-		this.countBarrier = new CountBarrier(total);
+		this.countBarrier = new CountBarrier(this.total);
 	}
 
 	/**
