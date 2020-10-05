@@ -21,6 +21,7 @@
 		<module>Wget</module>
 		<module>CommonResources</module>
 		<module>Waiting</module>
+		<module>NonBlockingAlgoritms</module>
 	</modules>
 	<dependencies>
 		<dependency>
