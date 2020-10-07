@@ -3,40 +3,13 @@ package ru.job4j;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class User {
-	private String username;
-	private String email;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(final String username) {
-		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(final String email) {
-		this.email = email;
-	}
-}
-
 /**
  * This class demonstrate working with ExecutorService.
  * @author kirill
  *
  */
 public class EmailNotification {
-	private ExecutorService pool;
-	/**
-	 * Constructor setup ExecutorService.
-	 */
-	public EmailNotification() {
-		this.pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-	}
+	private final ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	/**
 	 * Execution send method using ExecutorService pool.
 	 * @param user
