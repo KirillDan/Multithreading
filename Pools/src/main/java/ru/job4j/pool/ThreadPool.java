@@ -4,31 +4,18 @@ import java.util.LinkedList;
 import java.util.List;
 import ru.job4j.SimpleBlockingQueue;
 
+/**
+ * 
+ * @author kirill
+ *
+ */
 public class ThreadPool {
-	private class ThreadWorker extends Thread {
-		private SimpleBlockingQueue<Runnable> tasks;
-		
-		public ThreadWorker(final SimpleBlockingQueue<Runnable> tasks) {
-			this.tasks = tasks;
-		}
-
-		@Override
-		public void run() {
-			while (!Thread.currentThread().isInterrupted()) {
-				try {
-					this.tasks.poll().run();
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-				}
-			}
-		}
-	}
-	
 	private int size;
 	private final List<Thread> threads = new LinkedList<>();
 	private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>();
 
 	/**
+	 * Contructor.
 	 * 
 	 * @param size
 	 */
@@ -42,6 +29,7 @@ public class ThreadPool {
 	}
 
 	/**
+	 * Insert job into queue.
 	 * 
 	 * @param job
 	 */
@@ -50,7 +38,7 @@ public class ThreadPool {
 	}
 
 	/**
-	 * 
+	 * Stopping all threads.
 	 */
 	public void shutdown() {
 		for (Thread thread : this.threads) {
@@ -66,15 +54,23 @@ public class ThreadPool {
 			}
 		}
 	}
-	/**
-	 * 
-	 * @param args
-	 */
-	public static void main(final String[] args) {
-		ThreadPool threadPool = new ThreadPool();
-		threadPool.work(() -> {
-			System.out.println("Hello");
-		});
-		threadPool.shutdown();
+	
+	private class ThreadWorker extends Thread {
+		private SimpleBlockingQueue<Runnable> tasks;
+
+		public ThreadWorker(final SimpleBlockingQueue<Runnable> tasks) {
+			this.tasks = tasks;
+		}
+
+		@Override
+		public void run() {
+			while (!Thread.currentThread().isInterrupted()) {
+				try {
+					this.tasks.poll().run();
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
 	}
 }
