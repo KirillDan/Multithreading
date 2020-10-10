@@ -5,8 +5,24 @@
 <!-- commons lang customization of default Checkstyle behavior -->
 <module name="Checker">
 	<module name="JavadocPackage"/>
+	<!-- <module name="FileTabCharacter"/>-->
 	<module name="TreeWalker">
+		<module name="FinalParameters"/>
+		<module name="MissingJavadocMethod"/>
+		<module name="EmptyForInitializerPad"/>
 		<module name="EmptyBlock" />
+		<module name="ConstantName"/>
+		<module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z0-9]*)*$"/>
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
 		<module name="LeftCurly" />
 		<module name="NeedBraces" />
 		<module name="RightCurly" />
@@ -16,7 +32,7 @@
 		<module name="InterfaceIsType" />
 		<module name="HideUtilityClassConstructor" />
 		<module name="ThrowsCount">
-			<property name="max" value="2" />
+			<property name="max" value="4" />
 		</module>
 		<module name="AvoidStarImport" />
 		<module name="RedundantImport" />
@@ -27,6 +43,32 @@
 			<property name="scope" value="package" />
 			<property name="tokens" value="METHOD_DEF" />
 		</module>
+		<module name="EmptyForIteratorPad"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <module name="NeedBraces"/>
+        <module name="RightCurly"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="InterfaceIsType"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
 	</module>
 	<module name="LineLength">
 		<property name="max" value="120" />
