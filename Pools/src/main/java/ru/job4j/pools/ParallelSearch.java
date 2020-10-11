@@ -9,10 +9,13 @@ import java.util.concurrent.RecursiveTask;
  * @param <T>
  */
 public class ParallelSearch<T> extends RecursiveTask<int[]> {
-
+	/** The array in which to find the value */
 	private final T[] array;
+	/** The value to find */
 	private final T searchValue;
+	/** Start of array */
 	private final int from;
+	/** End of array */
 	private final int to;
 
 	/**
@@ -29,6 +32,13 @@ public class ParallelSearch<T> extends RecursiveTask<int[]> {
 		this.to = to;
 	}
 
+	
+	/**
+	 * In this methos if initial parameters from > to then method return null.
+	 * If initial parameters from = to then method use comparison with search value.
+	 * If fields or initial parameters to - from < 10 method will use linear searching.
+	 * If fields or initial parameters to - from > 10 method will use parallel searching.
+	 */
 	@Override
 	protected int[] compute() {
 		if (from > to) {
@@ -42,7 +52,6 @@ public class ParallelSearch<T> extends RecursiveTask<int[]> {
 				return null;
 			}
 		} else
-		// Если количество элементов в массиве меньше 10
 		if ((to - from) <= 10) {
 			int size = to - from;
 			int[] resSearch = new int[size];
@@ -54,7 +63,6 @@ public class ParallelSearch<T> extends RecursiveTask<int[]> {
 				}
 			}
 			if (iSearch != -1) {
-				// Обрезка массива
 				if ((iSearch + 1) < size) {
 					int[] resSearchTrim = new int[iSearch + 1];
 					for (int i = 0; i < resSearchTrim.length; i++) {
@@ -70,15 +78,12 @@ public class ParallelSearch<T> extends RecursiveTask<int[]> {
 
 		} else {
 			int mid = (from + to) / 2;
-			// создаем задачи для поиска
 			ParallelSearch leftSearch = new ParallelSearch(array, searchValue, from, mid);
 			ParallelSearch rightSearch = new ParallelSearch(array, searchValue, mid, to);
 			leftSearch.fork();
 			rightSearch.fork();
-			// объединяем полученные результаты
 			int[] left = (int[]) leftSearch.join();
 			int[] right = (int[]) rightSearch.join();
-			// возвратим результаты поиска
 			int[] result = null;
 			int resultSize = 0;
 			if (left != null && right != null) {

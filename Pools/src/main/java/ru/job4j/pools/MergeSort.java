@@ -14,24 +14,17 @@ public class MergeSort {
 	}
 
 	private static int[] sort(final int[] array, final int from, final int to) {
-		// при следующем условии, массив из одного элемента
-		// делить нечего, возвращаем элемент
 		if (from == to) {
 			return new int[] {array[from]};
 		}
-		// попали сюда, значит в массиве более одного элемента
-		// находим середину
 		int mid = (from + to) / 2;
-		// объединяем отсортированные части
 		return merge(
-				// сортируем левую часть
 				sort(array, from, mid),
-				// сортируем правую часть
 				sort(array, mid + 1, to));
 	}
 
 	/**
-	 * Метод объединения двух отсортированных массивов
+	 * Метод объединения двух отсортированных массивов.
 	 * 
 	 * @param left
 	 * @param right
