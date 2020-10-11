@@ -2,11 +2,10 @@ package ru.job4j.cache;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 class Base {
 	private int id;
-	private final AtomicReference<Integer> version = new AtomicReference<>(0);
+	private Integer version = 0;
 	private String name;
 
 	public Base() {
@@ -20,11 +19,11 @@ class Base {
 	}
 
 	public int getVersion() {
-		return this.version.get();
+		return this.version;
 	}
 
-	public boolean setVersion(final int expectedVersion, final int newVersion) {
-		return this.version.compareAndSet(expectedVersion, newVersion);
+	public void setVersion(final int newVersion) {
+		this.version = newVersion;
 	}
 
 	public String getName() {
@@ -41,7 +40,49 @@ class Base {
 
 	@Override
 	public String toString() {
-		return "Base [id=" + id + ", version=" + version.get() + ", name=" + name + "]\n";
+		return "Base [id=" + id + ", version=" + version + ", name=" + name + "]\n";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Base other = (Base) obj;
+		if (id != other.id) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (version == null) {
+			if (other.version != null) {
+				return false;
+			}
+		} else if (!version.equals(other.version)) {
+			return false;
+		}
+		return true;
 	}
 
 }
@@ -77,7 +118,7 @@ public class Cache {
 	 */
 	public void update(final Base model) throws OptimisticException {
 		this.cache.computeIfPresent(model.getId(), (k, v) -> {
-			if (!v.setVersion(v.getVersion(), v.getVersion() + 1)) {
+			if (model.getVersion() != v.getVersion()) {
 				throw new OptimisticException("Throw Exception in Thread");
 			} else {
 				v.setName(model.getName());

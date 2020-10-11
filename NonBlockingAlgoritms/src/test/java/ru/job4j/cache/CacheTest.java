@@ -6,8 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
-
 /**
  * Testing Cache class.
  * @author kirill
@@ -66,7 +64,7 @@ public class CacheTest {
 					public void run() {
 						try {
 							this.cache.update(newBase[i][j]);
-						} catch (RuntimeException e) {
+						} catch (Exception e) {
 							ex.set(e);
 						}
 					}
@@ -84,10 +82,6 @@ public class CacheTest {
 				thread[i][j].join();
 			}
 		}
-		Assert.assertThat(ex.get().getMessage(), is("Throw Exception in Thread"));
-//		try {
-//	} catch (Exception e) {
-//        ex.set(e);
-//    }
+		Assert.assertNull(ex.get());
 	}
 }
