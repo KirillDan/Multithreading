@@ -20,10 +20,9 @@ public class SocketFile {
 	 * @throws IOException 
 	 * @throws UnknownHostException 
 	 */
-	public SocketFile(final String[] headers) throws UnknownHostException, IOException {
+	public SocketFile() throws UnknownHostException, IOException {
 		super();
 		this.createSocket();
-		this.postInSocket(headers);
 	}
 	/**
 	 * @throws IOException 
@@ -47,28 +46,24 @@ public class SocketFile {
 	}
 	/**
 	 * 
-	 * @param line
+	 * @param user
 	 * @throws IOException 
 	 */
-	public void postInSocket(final String[] line) throws IOException {
-		if (line[0] != "-") {
-			String message = line[0] + "  " + line[1] + "  " + line[2] + "  " + line[3] + "\n";
+	public void postInSocket(final User user) throws IOException {
+			String message = user.getFirstName() + "  " + user.getLastName() + "  " 
+					+ user.getCountry() + "  " + user.getRating() + "\n";
 			this.out.write(message.getBytes());
-		} else {
-			String endMessage = "\n\n";
-			this.out.write(endMessage.getBytes());
-			this.closeSocket();
-		}
+
 	}
 	/**
 	 * 
-	 * @param line
+	 * @param user
 	 * @return void
 	 */
-	public CompletableFuture<Void> postInSocketFuture(final String[] line) {
+	public CompletableFuture<Void> postInSocketFuture(final User user) {
 		return CompletableFuture.runAsync(() -> {
 					try {
-						this.postInSocket(line);
+						this.postInSocket(user);
 					} catch (IOException e) {
 						e.printStackTrace();
 						this.closeSocket();

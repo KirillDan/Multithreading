@@ -15,13 +15,6 @@ import java.util.concurrent.CompletableFuture;
  *
  */
 public class SqlFile {
-	private String[] headers;
-	private int countryIndex;
-	private int firstnameIndex;
-	private int lastnameIndex;
-	private boolean newCountry;
-	private String thisCountry;
-	private String lastCountry;
 	private Connection conn;
 	private final static String SQL_CREATE_COUNTRIES = 
 			"CREATE TABLE COUNTRIES (id bigint auto_increment, country varchar(20))";
@@ -35,11 +28,7 @@ public class SqlFile {
 	 * 
 	 * @param headers
 	 */
-	public SqlFile(final String[] headers) {
-		this.headers = headers;
-		this.countryIndex = this.searchHeaderIndex("country");
-		this.firstnameIndex = this.searchHeaderIndex("first_name");
-		this.lastnameIndex = this.searchHeaderIndex("last_name");
+	public SqlFile() {
 		try {
 			this.getNewConnection();
 			this.createTableCountries();
@@ -48,25 +37,8 @@ public class SqlFile {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.newCountry = true;
 	}
 
-	/**
-	 * 
-	 * @param headerName
-	 * @return headerIndex
-	 */
-	public int searchHeaderIndex(final String headerName) {
-		int headerIndex = -1;
-		for (int i = 0; i < this.headers.length; i++) {
-			if (this.headers[i].equals(headerName)) {
-				headerIndex = i;
-				break;
-			}
-		}
-		return headerIndex;
-	}
-	
 	private void getNewConnection() throws SQLException, ClassNotFoundException {
 		Class.forName("org.h2.Driver");
 		String url = "jdbc:h2:mem:test";
@@ -74,8 +46,11 @@ public class SqlFile {
 		String passwd = "sa";
 		this.conn = DriverManager.getConnection(url, user, passwd);
 	}
-
-	private void closeConnection() throws SQLException {
+	/**
+	 * 
+	 * @throws SQLException
+	 */
+	public void closeConnection() throws SQLException {
 		this.conn.close();
 	}
 
@@ -93,12 +68,12 @@ public class SqlFile {
 
 	/**
 	 * 
-	 * @param country
-	 * @throws SQLException 
+	 * @param user
+	 * @throws SQLException
 	 */
-	public void insertIntoCountries(final String country) throws SQLException {
+	public void insertIntoCountries(final User user) throws SQLException {
 		PreparedStatement pst = this.conn.prepareStatement(SQL_INSERT_COUNTRIES);
-		pst.setString(1, country);
+		pst.setString(1, user.getCountry());
 		pst.execute();
 		pst.close();
 	}
@@ -106,42 +81,28 @@ public class SqlFile {
 	/**
 	 * 
 	 * @param user
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public void insertIntoUsers(final String[] user) throws SQLException {
+	public void insertIntoUsers(final User user) throws SQLException {
 		PreparedStatement pst = this.conn.prepareStatement(SQL_INSERT_USERS);
-		pst.setString(1, user[0]);
-		pst.setString(2, user[1]);
+		pst.setString(1, user.getFirstName());
+		pst.setString(2, user.getLastName());
 		pst.execute();
 		pst.close();
 	}
-	
+
 	/**
 	 * 
-	 * @param line
-	 * @throws SQLException 
+	 * @param user
+	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public void saveIntoTables(final String[] line) throws SQLException {
-		if (this.newCountry) {
-			this.newCountry = false;
-			this.thisCountry = line[countryIndex];
-			this.lastCountry = line[countryIndex];
-		}
-		if (!lastCountry.equals(line[countryIndex])) {
-			this.insertIntoCountries(lastCountry);
-			this.selectFromCountries(lastCountry);
-			this.newCountry = true;
-		}
-		String[] elements = new String[2];
-		elements[0] = line[firstnameIndex];
-		elements[1] = line[lastnameIndex];
-		this.insertIntoUsers(elements);
-		this.lastCountry = line[countryIndex];
-		if (line[0].equals("-")) {
-			this.closeConnection();
-		}
+	public void saveIntoTables(final User user) throws SQLException {
+		this.insertIntoCountries(user);
+//		this.selectFromCountries(user.getCountry());
+		this.insertIntoUsers(user);
 	}
+
 	/**
 	 * 
 	 * @param country
@@ -153,22 +114,22 @@ public class SqlFile {
 		pst.execute();
 		ResultSet rs = pst.getResultSet();
 		rs.next();
-//		System.out.println("id = " + rs.getInt(1) + " |  country = " + rs.getString(2));
-		pst.close();	
+		System.out.println("id = " + rs.getInt(1) + " |  country = " + rs.getString(2));
+		pst.close();
 	}
-	
+
 	/**
 	 * 
-	 * @param line
+	 * @param user
 	 * @return void
 	 */
-	public CompletableFuture<Void> saveIntoTablesFuture(final String[] line) {
+	public CompletableFuture<Void> saveIntoTablesFuture(final User user) {
 		return CompletableFuture.runAsync(() -> {
-				try {
-					this.saveIntoTables(line);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+			try {
+				this.saveIntoTables(user);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		});
 	}
 }

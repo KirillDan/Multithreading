@@ -36,13 +36,9 @@ public class ServerSocketFile implements Runnable {
 			is = this.socket.getInputStream();
 			int c;
 			String result = "";
-			String endMessage = "\n\n";
 			byte[] last4Bytes = new byte[4];
 			while ((is.read(last4Bytes)) != -1) {	
 				String message = new String(last4Bytes);
-				if (message.equals(endMessage)) {
-					break;
-				}
 				result += message;
 				System.out.print(message);
 			}
