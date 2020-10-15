@@ -9,11 +9,9 @@ class Base {
 	private String name;
 
 	public Base() {
-		super();
 	}
 
 	public Base(final int id, final String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}
@@ -93,16 +91,7 @@ class Base {
  *
  */
 public class Cache {
-	private ConcurrentHashMap<Integer, Base> cache;
-
-	/**
-	 * 
-	 */
-	public Cache() {
-		super();
-		this.cache = new ConcurrentHashMap<Integer, Base>();
-	}
-
+	private ConcurrentHashMap<Integer, Base> cache = new ConcurrentHashMap<Integer, Base>();
 	/**
 	 * 
 	 * @param model
@@ -120,9 +109,8 @@ public class Cache {
 		this.cache.computeIfPresent(model.getId(), (k, v) -> {
 			if (model.getVersion() != v.getVersion()) {
 				throw new OptimisticException("Throw Exception in Thread");
-			} else {
-				v.setName(model.getName());
 			}
+			v.setName(model.getName());
 			return v;
 		});
 	}
